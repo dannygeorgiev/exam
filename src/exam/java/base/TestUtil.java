@@ -3,8 +3,8 @@ package base;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
@@ -22,7 +22,7 @@ public class TestUtil {
     @BeforeMethod
     public void setUp(){
         readConfig("src/exam/resources/config.properties");
-        setupBrowserDriver(browser); //Todo add wait config
+        setupBrowserDriver(browser);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(implicitWait));
         loadTestUrl(applicationUrl);
     }
@@ -40,20 +40,24 @@ public class TestUtil {
             case "firefox":
                 driver = setupFireFoxDriver();
                 break;
+            case "edge":
+                driver = setupEdgeDriver();
+                break;
         }
     }
 
     private WebDriver setupChromeDriver(){
-        WebDriverManager.chromedriver().setup(); //Automatically downloads and prepare webdriver for the version of the browser
-        return new ChromeDriver(); //uses the downloaded driver version
+        WebDriverManager.chromedriver().setup();
+        return new ChromeDriver();
     }
 
     private WebDriver setupFireFoxDriver(){
         WebDriverManager.firefoxdriver().setup();
-        FirefoxOptions options = new FirefoxOptions();
-        options.addPreference("fission.webContentIsolationStrategy", 0);
-        options.addPreference("fission.bfcacheInParent", false);
         return new FirefoxDriver();
+    }
+    private WebDriver setupEdgeDriver(){
+        WebDriverManager.edgedriver().setup();
+        return new EdgeDriver();
     }
 
     private void readConfig(String filePath){
